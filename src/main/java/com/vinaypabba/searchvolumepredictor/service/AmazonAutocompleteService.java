@@ -8,6 +8,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
@@ -23,6 +24,13 @@ public class AmazonAutocompleteService {
         this.restTemplate = restTemplate;
     }
 
+    /**
+     * Queries the Amazon autocomplete API and checks if the provided keyword
+     * is returned as part of the possible predictions.
+     * @param partialText the partial text to be queried from the API (equivalent to typing text in Amazon's search box)
+     * @param keyword the actual keyword for which the search volume has to be predicted
+     * @return a boolean stating if the keyword is found when partially queried for the text of the keyword itself
+     */
     private boolean isTextPredicted(String partialText, String keyword) {
         ResponseEntity<Object[]> response = restTemplate.getForEntity(AUTOCOMPLETE_URL + partialText, Object[].class);
         Object[] body = response.getBody();
@@ -33,7 +41,14 @@ public class AmazonAutocompleteService {
         return false;
     }
 
+    /**
+     * Queries the Amazon autocomplete API for various combinations
+     * of the keyword provided in order to compute the search volume prediction score
+     * @param keyword the keyword for which the prediction score has to be calculated
+     * @return the calculated score
+     */
     public Double calculatePredictionScore(String keyword) {
+        keyword = keyword.toLowerCase(Locale.ROOT).trim();
         int first = 1, last = keyword.length(), mid = 1;
         while (first <= last) {
             mid = (first + last)/2;
