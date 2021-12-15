@@ -8,8 +8,9 @@ https://completion.amazon.com/search/complete?search-alias=aps&client=amazon-sea
 
 What assumptions did you make?
 
-* The keywords that are passed are actual products that can be purchased through Amazon. Some random text can be used to test the negative scenarios of getting a score close to 0.
-* The keywords are case-insensitive
+* The keywords that are passed are actual products that can be found on Amazon. Some random text can be used to test the scenarios of getting a score close to 0.
+* The keywords are case-insensitive.
+* Only the presence of the exact keyword in the Autcomplete API response is considered as a match. If the predictions contain the keyword with a prefix or a suffix and not the keyword itself, then this is not considered a match.
 
 
 How does your algorithm work?
@@ -35,3 +36,17 @@ How precise do you think your outcome is and why?
 * I think the outcome would be precise for keywords/products which have a decent sized name (more than 10 characters).
 * This is because the search scope is big, and it has more distinct prediction scores. This would result in more accurate calculations.
 
+### Build and run
+* Prerequisites
+  * Java 8+
+  * Maven
+* To build - 
+  * mvn clean install
+* To run - 
+  * java -jar target/search-volume-predictor-0.0.1-SNAPSHOT.jar
+
+### Test the API
+* To test the microservice deployed locally - 
+  * curl --location --request GET 'http://localhost:8080/estimate?keyword=Apple iPhone 13'
+* To test the microservice deployed on Heroku - 
+  * curl --location --request GET 'https://search-volume-predictor.herokuapp.com/estimate?keyword=Apple iPhone 13'
